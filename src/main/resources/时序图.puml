@@ -1,0 +1,19 @@
+@startuml
+Alice -> Bob: Authentication Request
+
+Bob -> Cat: 666
+
+Cat --> Bob: 66
+
+Bob --> Alice: Authentication Response
+
+Alice -> Cat: 999
+Cat --> Alice: 999
+
+
+
+
+
+
+@enduml
+
