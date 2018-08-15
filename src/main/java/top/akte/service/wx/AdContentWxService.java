@@ -35,7 +35,7 @@ public class AdContentWxService {
         List<AdContent> list = adContentMapper.selectByExample(example);
         PageInfo pageInfo = new PageInfo(list);
         PageRes<AdContentVo> pageRes = new PageRes<AdContentVo>();
-        pageRes.setTotalCount(pageInfo.getTotal());
+        pageRes.fillPageInfo(pageInfo);
         List<AdContentVo> vos = new ArrayList<>();
         list.forEach(ad ->{
             AdContentVo vo = new AdContentVo();

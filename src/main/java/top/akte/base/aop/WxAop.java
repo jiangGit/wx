@@ -72,7 +72,7 @@ public class WxAop {
         return res;
     }
 
-    @Around("within(top.akte.service.wx.*)")
+    @Around("execution(public * top.akte.service.wx.*.*(..))")
     public Object wxServiceTemplate(ProceedingJoinPoint proceedingJoinPoint){
         WxResponse res = new WxResponse();
         try {

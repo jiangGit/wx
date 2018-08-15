@@ -58,3 +58,14 @@ aliyunOss:
  accessKeyId: 111111
  accessKeySecret: 2222
  bucketName: wx
+
+http:
+  maxTotal: 200
+  defaultMaxPerRoute: 20
+  connectTimeout: 1000
+  connectionRequestTimeout: 500
+  socketTimeout: 10000
+
+jtt:
+  appId: 1808141728014157
+  appKey: 17ac97ac0a23b40150c1bf03223f3318

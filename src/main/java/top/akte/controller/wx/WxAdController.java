@@ -18,7 +18,7 @@ import top.akte.service.wx.AdContentWxService;
 
 @Api(description = "wx-广告模块")
 @RestController
-@RequestMapping("/api/wx/goods")
+@RequestMapping("/api/wx/ad")
 @Log4j
 public class WxAdController {
 

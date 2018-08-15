@@ -15,10 +15,10 @@ public class AdListWxRequest extends WxRequest {
     private String adModuleId;
 
     @Min(1L)
-    private Integer pageNo = 0;
+    private Integer pageNo = 1;
 
     @Min(1L)
-    private Integer pageSize = 0;
+    private Integer pageSize = 10;
 
 
 
