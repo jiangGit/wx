@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import top.akte.entity.vo.OpenIdVo;
 import top.akte.request.common.WxRequest;
 import top.akte.request.customer.GetOpenIdWxReq;
+import top.akte.response.common.ResponseCodeConstant;
 import top.akte.response.common.WxResponse;
 import top.akte.service.wx.CustomerWxService;
 
@@ -31,8 +32,12 @@ public class WxCustomerController {
     @ApiImplicitParams({
     })
     @RequestMapping(value = {"checkOpenId"},method = RequestMethod.POST)
-    public WxResponse checkOpenId(@RequestBody WxRequest request){
-        return new WxResponse();
+    public WxResponse<String> checkOpenId(@RequestBody WxRequest request){
+        WxResponse response = new WxResponse();
+        response.setOpenId(request.getOpenId());
+        response.setCode(ResponseCodeConstant.SUCCESS.getResponseCode());
+        response.setContent(ResponseCodeConstant.SUCCESS.getResponseDesc());
+        return response;
     }
 
     @ApiOperation(value = "获取openId", httpMethod = "POST")
