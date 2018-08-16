@@ -42,6 +42,9 @@ public class JttGoodsWxService {
     @Value("${jtt.appKey}")
     private String appKey;
 
+    @Value("${jtt.unionId}")
+    private Integer unionId;
+
 
     @Cacheable(value = "JttGoodsList",key = "\"goodsList\"+#req.key")
     public WxResponse<PageRes<JttGoodsItemVo>> goodsList(JttGoodsListWxReq req) throws IOException {
@@ -64,7 +67,7 @@ public class JttGoodsWxService {
         log.info("京推推请求结果："+json);
         JSONObject res = JSONObject.parseObject(json);
         if (res.getInteger("return") != 0){
-            throw new WxException(ResponseCodeConstant.SYS_EXCEPTION.getResponseCode(),res.getInteger("return")+"");
+            throw new WxException(ResponseCodeConstant.SYS_EXCEPTION.getResponseCode(),res.getString("result"));
         }
         JSONObject result = res.getJSONObject("result");
         List<JttGoodsItemVo> list = JacksonMapper.parseObjectWithUnderScores(JSONObject.toJSONString(result.getJSONArray("data")),new TypeReference<List<JttGoodsItemVo>>(){});
@@ -88,7 +91,7 @@ public class JttGoodsWxService {
         log.info("京推推请求结果："+json);
         JSONObject res = JSONObject.parseObject(json);
         if (res.getInteger("return") != 0){
-            throw new WxException(ResponseCodeConstant.SYS_EXCEPTION.getResponseCode(),res.getInteger("return")+"");
+            throw new WxException(ResponseCodeConstant.SYS_EXCEPTION.getResponseCode(),res.getString("result"));
         }
         JSONObject result = res.getJSONObject("result");
         JttGoodsDetailVo detailVo = JacksonMapper.parseObject(JSONObject.toJSONString(result),new TypeReference<JttGoodsDetailVo>(){});
@@ -109,7 +112,7 @@ public class JttGoodsWxService {
         log.info("京推推请求结果："+json);
         JSONObject res = JSONObject.parseObject(json);
         if (res.getInteger("return") != 0){
-            throw new WxException(ResponseCodeConstant.SYS_EXCEPTION.getResponseCode(),res.getInteger("return")+"");
+            throw new WxException(ResponseCodeConstant.SYS_EXCEPTION.getResponseCode(),res.getString("result"));
         }
         JSONObject result = res.getJSONObject("result");
         JttCoupomInfoVo coupomInfoVo = JacksonMapper.parseObject(JSONObject.toJSONString(result),new TypeReference<JttCoupomInfoVo>(){});
@@ -125,7 +128,7 @@ public class JttGoodsWxService {
         param.put("appid",appId);
         param.put("appkey",appKey);
         param.put("gid",req.getGid());
-        param.put("unionid",req.getUnionId());
+        param.put("unionid",unionId);
         if (req.getPositionId() != null){
             param.put("positionid",req.getPositionId());
         }
@@ -136,7 +139,7 @@ public class JttGoodsWxService {
         log.info("京推推请求结果："+json);
         JSONObject res = JSONObject.parseObject(json);
         if (res.getInteger("return") != 0){
-            throw new WxException(ResponseCodeConstant.SYS_EXCEPTION.getResponseCode(),res.getInteger("return")+"");
+            throw new WxException(ResponseCodeConstant.SYS_EXCEPTION.getResponseCode(),res.getString("result"));
         }
         JSONObject result = res.getJSONObject("result");
         response.setResult(result.getString("link"));

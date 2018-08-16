@@ -9,7 +9,6 @@ import top.akte.request.common.WxRequest;
 public class GoodsLinkReq extends WxRequest {
 
 
-    private Long unionId;//联盟ID(必填)
 
     private Long positionId;//推广位ID
 
@@ -17,7 +16,7 @@ public class GoodsLinkReq extends WxRequest {
 
     private String couponUrl;//优惠券链接(为空则位单品转链)
 
-    private String getKey(){
-        return String.format("%s_%s_%s_%s",gid,unionId,couponUrl,positionId);
+    public String getKey(){
+        return String.format("%s_%s_%s",gid,couponUrl,positionId);
     }
 }
