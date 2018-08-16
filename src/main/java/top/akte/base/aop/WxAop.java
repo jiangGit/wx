@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import top.akte.base.config.RedisConnection;
-import top.akte.entity.vo.WxUserInfoVo;
+import top.akte.entity.vo.OpenIdVo;
 import top.akte.request.common.WxRequest;
 import top.akte.response.common.ResponseCodeConstant;
 import top.akte.response.common.WxResponse;
@@ -44,23 +44,26 @@ public class WxAop {
             String sessionId = req.getSessionId();
             if (StringUtils.isBlank(sessionId)){
                 sessionId = IdGen.uuid();
-                redisConnection.setEx(sessionId,new WxUserInfoVo(),T, TimeUnit.MINUTES);
+                redisConnection.setEx(sessionId,new OpenIdVo(),T, TimeUnit.MINUTES);
                 req.setOpenId(null);
                 req.setSessionId(sessionId);
             }else {
-                WxUserInfoVo userInfo =  (WxUserInfoVo) redisConnection.get(sessionId);
+                OpenIdVo userInfo =  (OpenIdVo) redisConnection.get(sessionId);
                 if (userInfo != null){
                     req.setOpenId(userInfo.getOpenId());
                     redisTemplate.expire(sessionId,T,TimeUnit.MINUTES);
                 }else {
                     sessionId = IdGen.uuid();
-                    redisConnection.setEx(sessionId,new WxUserInfoVo(),T, TimeUnit.MINUTES);
+                    redisConnection.setEx(sessionId,new OpenIdVo(),T, TimeUnit.MINUTES);
                     req.setOpenId(null);
                     req.setSessionId(sessionId);
                 }
             }
             WxResponse res = (WxResponse) proceedingJoinPoint.proceed();
             res.setSessionId(sessionId);
+            if (res.getOpenId() == null){
+                res.setOpenId(req.getOpenId());
+            }
             return res;
         } catch (Throwable throwable) {
             throwable.printStackTrace();

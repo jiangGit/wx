@@ -7,4 +7,6 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class WxResponse<T> extends  CommonResponse<T>{
     private String sessionId;
+
+    private String openId;
 }

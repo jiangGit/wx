@@ -71,5 +71,10 @@ jtt:
   appKey: 17ac97ac0a23b40150c1bf03223f3318
   unionId: 100
 
+wx:
+  appId: wx6f52e67b560e5fd1
+  secret: fcc47d100586e56dc9e24a34a4ee4e8e
+
 swagger:
   enable: true
+
