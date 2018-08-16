@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import top.akte.request.jtt.CoupomInfoWxReq;
+import top.akte.request.jtt.GoodsLinkReq;
 import top.akte.request.jtt.JttGoodsDetailWxReq;
 import top.akte.request.jtt.JttGoodsListWxReq;
 import top.akte.response.common.PageRes;
 import top.akte.response.common.WxResponse;
+import top.akte.response.jtt.JttCoupomInfoVo;
 import top.akte.response.jtt.JttGoodsDetailVo;
 import top.akte.response.jtt.JttGoodsItemVo;
 import top.akte.service.wx.JttGoodsWxService;
@@ -48,6 +51,28 @@ public class WxGoodsController {
     @RequestMapping(value = {"goodsDetail"},method = RequestMethod.POST)
     public WxResponse<JttGoodsDetailVo> goodsDetail(@RequestBody JttGoodsDetailWxReq req) throws Exception {
         return jttGoodsWxService.goodsDetail(req);
+    }
+
+    @ApiOperation(value = "优惠券详情", notes = "优惠券详情", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "url", value="商品优惠券", paramType = "query"),
+    })
+    @RequestMapping(value = {"coupomInfo"},method = RequestMethod.POST)
+    public WxResponse<JttCoupomInfoVo> coupomInfo(@RequestBody CoupomInfoWxReq req) throws Exception {
+        return jttGoodsWxService.coupomInfo(req);
+    }
+
+
+    @ApiOperation(value = "二合一转连链接", notes = "优惠券详情", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "gid", value="商品id", paramType = "query"),
+            @ApiImplicitParam(name = "unionId", value="联盟ID", paramType = "query"),
+            @ApiImplicitParam(name = "couponUrl", value="优惠券链接(为空则位单品转链)", paramType = "query"),
+            @ApiImplicitParam(name = "positionId", value="推广位ID", paramType = "query"),
+    })
+    @RequestMapping(value = {"goodsLink"},method = RequestMethod.POST)
+    public WxResponse<String> goodsLink(@RequestBody GoodsLinkReq req) throws IOException{
+        return jttGoodsWxService.goodsLink(req);
     }
 
 }

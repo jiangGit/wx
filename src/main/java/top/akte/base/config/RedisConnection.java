@@ -5,8 +5,13 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.cache.annotation.CachingConfigurerSupport;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisNode;
 import org.springframework.data.redis.connection.RedisSentinelConfiguration;
@@ -17,12 +22,13 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import redis.clients.jedis.JedisPoolConfig;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
 
 @Configuration
 @Slf4j
-public class RedisConnection {
+public class RedisConnection  {
 
     @Autowired
     AppSettings appSettings;
@@ -83,6 +89,7 @@ public class RedisConnection {
         template.setConnectionFactory(jedisConnectionFactory());
 
         template.setKeySerializer(new StringRedisSerializer());
+        template.setHashKeySerializer(new StringRedisSerializer());
         //定义value的序列化方式
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
         ObjectMapper om = new ObjectMapper();
@@ -139,5 +146,19 @@ public class RedisConnection {
     public void delete(String key) {
         redisTemplate.delete(key);
     }
+
+    /**
+     * 设置RedisCacheManager
+     * 使用cache注解管理redis缓存
+     *
+     * @return
+     */
+    @Bean
+    public RedisCacheManager cacheManager() {
+        RedisCacheManager redisCacheManager = new RedisCacheManager(redisTemplate);
+        redisCacheManager.setDefaultExpiration(2*3600*1000);
+        return redisCacheManager;
+    }
+
 
 }

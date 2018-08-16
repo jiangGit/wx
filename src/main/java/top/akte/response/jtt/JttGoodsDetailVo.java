@@ -28,4 +28,16 @@ public class JttGoodsDetailVo {
     private Float unitPrice; //商品单价即京东价
 
     private Float wlUnitPrice; //商品无线京东价
+
+    private Integer cid; // 一级类别id
+
+    private Integer cid2; // 二级类别id
+
+    private Integer cid3; // 三级类别id
+
+    private String cidName; // 一级类别
+
+    private String cid2Name;// 二级类别
+
+    private String cid3Name;// 三级类别
 }

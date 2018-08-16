@@ -4,7 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.cache.annotation.EnableCaching;
 
+@EnableCaching //加上这个注解是的支持缓存注解
 @SpringBootApplication(scanBasePackages={"top.akte"})
 public class WxApplication extends SpringBootServletInitializer {
     @Override

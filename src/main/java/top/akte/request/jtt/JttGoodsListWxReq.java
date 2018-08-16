@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.ToString;
 import top.akte.request.common.WxRequest;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
 @Data
@@ -47,5 +48,10 @@ public class JttGoodsListWxReq extends WxRequest {
      sale : 优惠最多；
      */
     private String rank;
+
+
+    public String getKey(){
+        return String.format("%s_%s_%s_%s_%s",type,rank,so,pageNo,pageSize);
+    }
 
 }
