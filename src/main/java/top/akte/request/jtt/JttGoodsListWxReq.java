@@ -12,9 +12,11 @@ import javax.validation.constraints.Min;
 public class JttGoodsListWxReq extends WxRequest {
 
     @Min(1L)
+    @Max(50)
     private Integer pageNo = 1;
 
-    @Min(1L)
+    @Min(10L)
+    @Max(100)
     private Integer pageSize = 10;
 
     /**

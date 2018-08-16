@@ -66,7 +66,6 @@ public class WxGoodsController {
     @ApiOperation(value = "二合一转连链接", notes = "优惠券详情", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "gid", value="商品id", paramType = "query"),
-            @ApiImplicitParam(name = "unionId", value="联盟ID", paramType = "query"),
             @ApiImplicitParam(name = "couponUrl", value="优惠券链接(为空则位单品转链)", paramType = "query"),
             @ApiImplicitParam(name = "positionId", value="推广位ID", paramType = "query"),
     })

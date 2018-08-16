@@ -63,6 +63,8 @@ public class JttGoodsWxService {
         if (StringUtils.isNotBlank(req.getRank())){
             param.put("rank",req.getRank());
         }
+        param.put("page",req.getPageNo());
+        param.put("num",req.getPageSize());
         String json = httpAPIService.doPost(url,param);
         log.info("京推推请求结果："+json);
         JSONObject res = JSONObject.parseObject(json);
