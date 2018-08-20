@@ -14,6 +14,7 @@ import top.akte.response.common.PageRes;
 import top.akte.response.common.ResponseCodeConstant;
 import top.akte.response.common.WxResponse;
 import top.akte.response.jtt.JttGoodsDetailVo;
+import top.akte.response.pdd.PddGoodsDetailVo;
 import top.akte.response.pdd.PddGoodsItemVo;
 import top.akte.util.JacksonMapper;
 import top.akte.util.MD5;
@@ -79,9 +80,9 @@ public class PddWxService {
     }
 
 
-    public WxResponse<PddGoodsItemVo> goodsDetail(PddGoodsDetailWxReq req) throws IOException {
+    public WxResponse<PddGoodsDetailVo> goodsDetail(PddGoodsDetailWxReq req) throws IOException {
         String type = "pdd.ddk.goods.detail";
-        WxResponse<PddGoodsItemVo> response = new WxResponse();
+        WxResponse<PddGoodsDetailVo> response = new WxResponse();
         Map<String,Object> param = getPubParams(type);
         param.put("goods_id_list",String.format("[%s]",req.getGoodsId()));
         param.put("sign",getSign(param));
@@ -92,11 +93,17 @@ public class PddWxService {
             throw new WxException(ResponseCodeConstant.SYS_EXCEPTION.getResponseCode(),res.getJSONObject("error_response").getString("error_msg"));
         }
         JSONObject result = res.getJSONObject("goods_detail_response");
-        PddGoodsItemVo detailVo = JacksonMapper.parseObject(JSONObject.toJSONString(result),new TypeReference<PddGoodsItemVo>(){});
+        PddGoodsDetailVo detailVo = JacksonMapper.parseObjectWithUnderScores(JSONObject.toJSONString(result),new TypeReference<PddGoodsDetailVo>(){});
         response.setResult(detailVo);
         return response;
     }
 
+    public WxResponse genQrcode(){
+        WxResponse response = new WxResponse();
+
+
+        return response;
+    }
 
     private Map<String,Object> getPubParams(String type){
         Map<String, Object>  params = new HashMap<>();

@@ -122,7 +122,7 @@ public class JttGoodsWxService {
         return response;
     }
 
-    @Cacheable(value = "goodsLink", key = "\"goodsLink\"+#req.key")
+   // @Cacheable(value = "goodsLink", key = "\"goodsLink\"+#req.key")
     public WxResponse<String> goodsLink(GoodsLinkReq req) throws IOException{
         WxResponse<String> response = new WxResponse<>();
         String url = "http://japi.jingtuitui.com/api/get_goods_link";
