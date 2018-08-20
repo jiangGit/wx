@@ -6,11 +6,14 @@ import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import top.akte.base.config.http.HttpAPIService;
+import top.akte.request.pdd.PddGoodsDetailWxReq;
 import top.akte.request.pdd.PddSearchGoodsWxReq;
 import top.akte.response.common.PageRes;
 import top.akte.response.common.ResponseCodeConstant;
 import top.akte.response.common.WxResponse;
+import top.akte.response.jtt.JttGoodsDetailVo;
 import top.akte.response.pdd.PddGoodsItemVo;
 import top.akte.util.JacksonMapper;
 import top.akte.util.MD5;
@@ -20,6 +23,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Log4j
+@Service
 public class PddWxService {
 
     @Value("${pdd.appId}")
@@ -71,6 +75,25 @@ public class PddWxService {
         pageRes.setList(list);
         pageRes.setTotalCount(result.getInteger("total_count"));
         response.setResult(pageRes);
+        return response;
+    }
+
+
+    public WxResponse<PddGoodsItemVo> goodsDetail(PddGoodsDetailWxReq req) throws IOException {
+        String type = "pdd.ddk.goods.detail";
+        WxResponse<PddGoodsItemVo> response = new WxResponse();
+        Map<String,Object> param = getPubParams(type);
+        param.put("goods_id_list",String.format("[%s]",req.getGoodsId()));
+        param.put("sign",getSign(param));
+        String json = httpAPIService.doPost(url,param);
+        log.info("京推推请求结果："+json);
+        JSONObject res = JSONObject.parseObject(json);
+        if (res.get("goods_detail_response") == null){
+            throw new WxException(ResponseCodeConstant.SYS_EXCEPTION.getResponseCode(),res.getJSONObject("error_response").getString("error_msg"));
+        }
+        JSONObject result = res.getJSONObject("goods_detail_response");
+        PddGoodsItemVo detailVo = JacksonMapper.parseObject(JSONObject.toJSONString(result),new TypeReference<PddGoodsItemVo>(){});
+        response.setResult(detailVo);
         return response;
     }
 
