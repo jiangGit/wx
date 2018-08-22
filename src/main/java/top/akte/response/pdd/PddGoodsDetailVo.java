@@ -6,7 +6,7 @@ import lombok.ToString;
 import java.util.List;
 
 @Data
-@ToString(callSuper = true)
+@ToString
 public class PddGoodsDetailVo {
 
     /**

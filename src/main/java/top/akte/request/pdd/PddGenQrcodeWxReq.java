@@ -5,7 +5,7 @@ import lombok.ToString;
 import top.akte.request.common.WxRequest;
 
 @Data
-@ToString
+@ToString(callSuper = true)
 public class PddGenQrcodeWxReq extends WxRequest {
 
     private Integer goodsId;

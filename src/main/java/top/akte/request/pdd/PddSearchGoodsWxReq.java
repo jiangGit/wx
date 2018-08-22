@@ -5,7 +5,7 @@ import lombok.ToString;
 import top.akte.request.common.WxRequest;
 
 @Data
-@ToString
+@ToString(callSuper = true)
 public class PddSearchGoodsWxReq extends WxRequest {
     /**
      * 商品关键词 与opt_id字段选填一个或全部填写

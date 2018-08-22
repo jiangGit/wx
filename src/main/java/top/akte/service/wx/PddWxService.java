@@ -8,14 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import top.akte.base.config.http.HttpAPIService;
-import top.akte.request.pdd.PddGoodsDetailWxReq;
-import top.akte.request.pdd.PddSearchGoodsWxReq;
+import top.akte.request.pdd.*;
 import top.akte.response.common.PageRes;
 import top.akte.response.common.ResponseCodeConstant;
 import top.akte.response.common.WxResponse;
 import top.akte.response.jtt.JttGoodsDetailVo;
+import top.akte.response.pdd.PddGoodsCatItemVo;
 import top.akte.response.pdd.PddGoodsDetailVo;
 import top.akte.response.pdd.PddGoodsItemVo;
+import top.akte.response.pdd.PddGoodsOptItemVo;
 import top.akte.util.JacksonMapper;
 import top.akte.util.MD5;
 import top.akte.util.WxException;
@@ -39,7 +40,60 @@ public class PddWxService {
     @Autowired
     private HttpAPIService httpAPIService;
 
+    /**
+     * 查询类别列表
+     * @param req
+     * @return
+     * @throws IOException
+     */
+    public WxResponse<List<PddGoodsCatItemVo>> catList(PddCatListWxReq req)throws IOException{
+        String type = "pdd.goods.cats.get";
+        WxResponse<List<PddGoodsCatItemVo>> response = new WxResponse();
+        Map<String,Object> param = getPubParams(type);
+        param.put("parent_cat_id",req.getParentCatId());
+        param.put("sign",getSign(param));
+        String json = httpAPIService.doPost(url,param);
+        log.info("京推推请求结果："+json);
+        JSONObject res = JSONObject.parseObject(json);
+        if (res.get("goods_cats_get_response") == null){
+            throw new WxException(ResponseCodeConstant.SYS_EXCEPTION.getResponseCode(),res.getJSONObject("error_response").getString("error_msg"));
+        }
+        JSONObject result = res.getJSONObject("goods_cats_get_response");
+        List<PddGoodsCatItemVo> list = JacksonMapper.parseObjectWithUnderScores(JSONObject.toJSONString(result.getJSONArray("goods_cats_list")),new TypeReference<List<PddGoodsCatItemVo>>(){});
+        response.setResult(list);
+        return response;
+    }
 
+    /**
+     * 查询标签列表
+     * @param req
+     * @return
+     * @throws IOException
+     */
+    public WxResponse<List<PddGoodsOptItemVo>> optList(PddOptListWxReq req)throws IOException{
+        String type = "pdd.goods.opt.get";
+        WxResponse<List<PddGoodsOptItemVo>> response = new WxResponse();
+        Map<String,Object> param = getPubParams(type);
+        param.put("parent_opt_id",req.getParentOptId());
+        param.put("sign",getSign(param));
+        String json = httpAPIService.doPost(url,param);
+        log.info("京推推请求结果："+json);
+        JSONObject res = JSONObject.parseObject(json);
+        if (res.get("goods_opt_get_response") == null){
+            throw new WxException(ResponseCodeConstant.SYS_EXCEPTION.getResponseCode(),res.getJSONObject("error_response").getString("error_msg"));
+        }
+        JSONObject result = res.getJSONObject("goods_opt_get_response");
+        List<PddGoodsOptItemVo> list = JacksonMapper.parseObjectWithUnderScores(JSONObject.toJSONString(result.getJSONArray("goods_cats_list")),new TypeReference<List<PddGoodsOptItemVo>>(){});
+        response.setResult(list);
+        return response;
+    }
+
+    /**
+     * 商品列表查询
+     * @param req
+     * @return
+     * @throws IOException
+     */
     public WxResponse<PageRes<PddGoodsItemVo>> searchGoods(PddSearchGoodsWxReq req) throws IOException {
         String type = "pdd.ddk.goods.search";
         WxResponse response = new WxResponse();
@@ -79,7 +133,12 @@ public class PddWxService {
         return response;
     }
 
-
+    /**
+     * 商品详情
+     * @param req
+     * @return
+     * @throws IOException
+     */
     public WxResponse<PddGoodsDetailVo> goodsDetail(PddGoodsDetailWxReq req) throws IOException {
         String type = "pdd.ddk.goods.detail";
         WxResponse<PddGoodsDetailVo> response = new WxResponse();
@@ -98,10 +157,27 @@ public class PddWxService {
         return response;
     }
 
-    public WxResponse genQrcode(){
+    /**
+     * 生成推广地址
+     * @param req
+     * @return
+     * @throws IOException
+     */
+    public WxResponse<String > genQrcode(PddGenQrcodeWxReq req)throws IOException{
+        String type = "pdd.ddk.weapp.qrcode.url.gen";
         WxResponse response = new WxResponse();
-
-
+        Map<String,Object> param = getPubParams(type);
+        param.put("p_id","?");
+        param.put("custom_parameters","?");
+        param.put("goods_id_list",String.format("[%s]",req.getGoodsId()));
+        param.put("sign",getSign(param));
+        String json = httpAPIService.doPost(url,param);
+        log.info("京推推请求结果："+json);
+        JSONObject res = JSONObject.parseObject(json);
+        if (res.get("weapp_qrcode_generate_response") == null){
+            throw new WxException(ResponseCodeConstant.SYS_EXCEPTION.getResponseCode(),res.getJSONObject("error_response").getString("error_msg"));
+        }
+        response.setResult(res.getJSONObject("weapp_qrcode_generate_response").getString("url"));
         return response;
     }
 
