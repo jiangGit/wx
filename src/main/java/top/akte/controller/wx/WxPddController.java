@@ -30,7 +30,7 @@ public class WxPddController {
 
     @ApiOperation(value = "查询类别列表", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "gid", value="商品id", paramType = "query"),
+            @ApiImplicitParam(name = "parentCatId", value="父级ID", paramType = "query"),
     })
     @RequestMapping(value = {"catList"},method = RequestMethod.POST)
     public WxResponse<List<PddGoodsCatItemVo>> catList(@RequestBody PddCatListWxReq req)throws IOException {
@@ -39,7 +39,7 @@ public class WxPddController {
 
     @ApiOperation(value = "查询标签列表", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "gid", value="商品id", paramType = "query"),
+            @ApiImplicitParam(name = "parentOptId", value="父级ID", paramType = "query"),
     })
     @RequestMapping(value = {"optList"},method = RequestMethod.POST)
     public WxResponse<List<PddGoodsOptItemVo>> optList(@RequestBody PddOptListWxReq req)throws IOException{
@@ -48,7 +48,7 @@ public class WxPddController {
 
     @ApiOperation(value = "商品列表查询", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "gid", value="商品id", paramType = "query"),
+            @ApiImplicitParam(name = "optId", value="商品标签类目ID", paramType = "query"),
     })
     @RequestMapping(value = {"searchGoods"},method = RequestMethod.POST)
     public WxResponse<PageRes<PddGoodsItemVo>> searchGoods(@RequestBody PddSearchGoodsWxReq req) throws IOException {
@@ -57,7 +57,7 @@ public class WxPddController {
 
     @ApiOperation(value = "商品详情", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "gid", value="商品id", paramType = "query"),
+            @ApiImplicitParam(name = "goodsId", value="商品id", paramType = "query"),
     })
     @RequestMapping(value = {"goodsDetail"},method = RequestMethod.POST)
     public WxResponse<PddGoodsDetailVo> goodsDetail(@RequestBody PddGoodsDetailWxReq req) throws IOException {
@@ -66,7 +66,8 @@ public class WxPddController {
 
     @ApiOperation(value = "生成推广地址", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "gid", value="商品id", paramType = "query"),
+            @ApiImplicitParam(name = "goodsId", value="商品id", paramType = "query"),
+            @ApiImplicitParam(name = "pid", value="广告位id？后面考虑去掉", paramType = "query"),
     })
     @RequestMapping(value = {"genQrcode"},method = RequestMethod.POST)
     public WxResponse<String > genQrcode(@RequestBody PddGenQrcodeWxReq req)throws IOException{
