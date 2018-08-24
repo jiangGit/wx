@@ -27,7 +27,7 @@ public class PddGoodsDetailVo {
     /**
      * 商品标签ID
      */
-    private List optIds;
+    private List<Integer> optIds;
 
     /**
      * 店铺类型，1-个人，2-企业，3-旗舰店，4-专卖店，5-专营店，6-普通店
@@ -52,7 +52,7 @@ public class PddGoodsDetailVo {
     /**
      * 商品详情图列表
      */
-    private String goodsGalleryUrls;
+    private List<String> goodsGalleryUrls;
 
     /**
      * 商品标签名
@@ -67,7 +67,12 @@ public class PddGoodsDetailVo {
     /**
      * 商品类目ID，
      */
-    private Integer catIds;
+    private Integer catId;
+
+    /**
+     * 商品类目ID，
+     */
+    private List<Integer> catIds;
 
     /**
      * 商品评价数量

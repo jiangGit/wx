@@ -6,7 +6,10 @@ import top.akte.request.common.WxRequest;
 
 @Data
 @ToString(callSuper = true)
-public class PddCatListWxReq extends WxRequest {
+public class PddQueryPidWxReq  extends WxRequest {
 
-    private Integer parentCatId = 0;
+    private Integer page = 1;
+
+    private Integer pageSize = 50;
+
 }

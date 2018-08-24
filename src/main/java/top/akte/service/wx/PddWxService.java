@@ -12,11 +12,7 @@ import top.akte.request.pdd.*;
 import top.akte.response.common.PageRes;
 import top.akte.response.common.ResponseCodeConstant;
 import top.akte.response.common.WxResponse;
-import top.akte.response.jtt.JttGoodsDetailVo;
-import top.akte.response.pdd.PddGoodsCatItemVo;
-import top.akte.response.pdd.PddGoodsDetailVo;
-import top.akte.response.pdd.PddGoodsItemVo;
-import top.akte.response.pdd.PddGoodsOptItemVo;
+import top.akte.response.pdd.*;
 import top.akte.util.JacksonMapper;
 import top.akte.util.MD5;
 import top.akte.util.WxException;
@@ -26,6 +22,9 @@ import java.util.*;
 
 @Log4j
 @Service
+/**
+ * 拼多多
+ */
 public class PddWxService {
 
     @Value("${pdd.appId}")
@@ -83,7 +82,7 @@ public class PddWxService {
             throw new WxException(ResponseCodeConstant.SYS_EXCEPTION.getResponseCode(),res.getJSONObject("error_response").getString("error_msg"));
         }
         JSONObject result = res.getJSONObject("goods_opt_get_response");
-        List<PddGoodsOptItemVo> list = JacksonMapper.parseObjectWithUnderScores(JSONObject.toJSONString(result.getJSONArray("goods_cats_list")),new TypeReference<List<PddGoodsOptItemVo>>(){});
+        List<PddGoodsOptItemVo> list = JacksonMapper.parseObjectWithUnderScores(JSONObject.toJSONString(result.getJSONArray("goods_opt_list")),new TypeReference<List<PddGoodsOptItemVo>>(){});
         response.setResult(list);
         return response;
     }
@@ -152,7 +151,7 @@ public class PddWxService {
             throw new WxException(ResponseCodeConstant.SYS_EXCEPTION.getResponseCode(),res.getJSONObject("error_response").getString("error_msg"));
         }
         JSONObject result = res.getJSONObject("goods_detail_response");
-        PddGoodsDetailVo detailVo = JacksonMapper.parseObjectWithUnderScores(JSONObject.toJSONString(result),new TypeReference<PddGoodsDetailVo>(){});
+        PddGoodsDetailVo detailVo = JacksonMapper.parseObjectWithUnderScores(JSONObject.toJSONString(result.getJSONArray("goods_details").getJSONObject(0)),new TypeReference<PddGoodsDetailVo>(){});
         response.setResult(detailVo);
         return response;
     }
@@ -167,8 +166,8 @@ public class PddWxService {
         String type = "pdd.ddk.weapp.qrcode.url.gen";
         WxResponse response = new WxResponse();
         Map<String,Object> param = getPubParams(type);
-        param.put("p_id","?");
-        param.put("custom_parameters","?");
+        param.put("p_id",req.getPid());
+        param.put("custom_parameters","pdd");
         param.put("goods_id_list",String.format("[%s]",req.getGoodsId()));
         param.put("sign",getSign(param));
         String json = httpAPIService.doPost(url,param);
@@ -178,6 +177,34 @@ public class PddWxService {
             throw new WxException(ResponseCodeConstant.SYS_EXCEPTION.getResponseCode(),res.getJSONObject("error_response").getString("error_msg"));
         }
         response.setResult(res.getJSONObject("weapp_qrcode_generate_response").getString("url"));
+        return response;
+    }
+
+    /**
+     * 查询已经生成的推广位信息
+     * @param req
+     * @return
+     * @throws IOException
+     */
+    public WxResponse<PageRes<PddPItemVo>> queryPid(PddQueryPidWxReq req) throws IOException {
+        String type = "pdd.ddk.goods.pid.query";
+        WxResponse response = new WxResponse();
+        PageRes<PddPItemVo> pageRes = new PageRes<>();
+        Map<String,Object> param = getPubParams(type);
+        param.put("page",req.getPage());
+        param.put("page_size",req.getPageSize());
+        param.put("sign",getSign(param));
+        String json = httpAPIService.doPost(url,param);
+        log.info("京推推请求结果："+json);
+        JSONObject res = JSONObject.parseObject(json);
+        if (res.get("p_id_query_response") == null){
+            throw new WxException(ResponseCodeConstant.SYS_EXCEPTION.getResponseCode(),res.getJSONObject("error_response").getString("error_msg"));
+        }
+        JSONObject result = res.getJSONObject("p_id_query_response");
+        List<PddPItemVo> list = JacksonMapper.parseObjectWithUnderScores(JSONObject.toJSONString(result.getJSONArray("p_id_list")),new TypeReference<List<PddPItemVo>>(){});
+        pageRes.setList(list);
+        pageRes.setTotalCount(result.getInteger("total_count"));
+        response.setResult(pageRes);
         return response;
     }
 
@@ -215,10 +242,10 @@ public class PddWxService {
             for (int i = 0; i < keys.size(); i++) {
                 String key = keys.get(i);
                 String value = map.get(key);
-                sb.append(value);
+                sb.append(key).append(value);
             }
             sb.append(appKey);
-            return MD5.MD5Encode(sb.toString());
+            return MD5.MD5Encode(sb.toString()).toUpperCase();
         }
     }
 }

@@ -9,4 +9,6 @@ import top.akte.request.common.WxRequest;
 public class PddGenQrcodeWxReq extends WxRequest {
 
     private Integer goodsId;
+
+    private String pid;
 }

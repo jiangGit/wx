@@ -25,7 +25,7 @@ public class JacksonMapper extends ObjectMapper {
         if (mapperWithUnderScores == null) {
             mapperWithUnderScores = new JacksonMapper().config();
         }
-        mapperWithUnderScores.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
+        mapperWithUnderScores.setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
         return mapperWithUnderScores;
     }
 

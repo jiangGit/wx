@@ -75,6 +75,11 @@ wx:
   appId: wx6f52e67b560e5fd1
   secret: fcc47d100586e56dc9e24a34a4ee4e8e
 
+pdd:
+  appId: 1457f6a7fbfd4acca5a3130993d8f163
+  appKey: ff1063ae9ac85d1db9be673456e8bef7ad29f4ec
+  url: http://gw-api.pinduoduo.com/api/router
+
 swagger:
   enable: true
 
