@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import top.akte.request.common.WxRequest;
 import top.akte.request.pdd.*;
 import top.akte.response.common.PageRes;
 import top.akte.response.common.WxResponse;
@@ -81,6 +82,24 @@ public class WxPddController {
     @RequestMapping(value = {"queryPid"},method = RequestMethod.POST)
     public WxResponse<PageRes<PddPItemVo>> queryPid(@RequestBody PddQueryPidWxReq req) throws IOException {
         return pddWxService.queryPid(req);
+    }
+
+    @ApiOperation(value = "生成推广广告位", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "gid", value="商品id", paramType = "query"),
+    })
+    @RequestMapping(value = {"generatePid"},method = RequestMethod.POST)
+    public WxResponse generatePid(@RequestBody WxRequest req) throws IOException {
+        return pddWxService.generatePid(req);
+    }
+
+    @ApiOperation(value = "生成推广链接", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "gid", value="商品id", paramType = "query"),
+    })
+    @RequestMapping(value = {"generateUrl"},method = RequestMethod.POST)
+    public WxResponse<PddGenUrlVo> generateUrl(@RequestBody PddGenerateUrlWxReq req) throws IOException{
+        return pddWxService.generateUrl(req);
     }
 
 }

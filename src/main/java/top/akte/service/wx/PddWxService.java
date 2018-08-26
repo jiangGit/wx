@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import top.akte.base.config.http.HttpAPIService;
+import top.akte.request.common.WxRequest;
 import top.akte.request.pdd.*;
 import top.akte.response.common.PageRes;
 import top.akte.response.common.ResponseCodeConstant;
@@ -205,6 +206,53 @@ public class PddWxService {
         pageRes.setList(list);
         pageRes.setTotalCount(result.getInteger("total_count"));
         response.setResult(pageRes);
+        return response;
+    }
+
+    /**
+     *
+     * @param req
+     * @return
+     * @throws IOException
+     */
+    public WxResponse generatePid(WxRequest req) throws IOException {
+        String type = "pdd.ddk.goods.pid.generate";
+        WxResponse response = new WxResponse();
+        PageRes<PddPItemVo> pageRes = new PageRes<>();
+        Map<String,Object> param = getPubParams(type);
+        param.put("number",100);
+        param.put("sign",getSign(param));
+        String json = httpAPIService.doPost(url,param);
+        log.info("京推推请求结果："+json);
+        JSONObject res = JSONObject.parseObject(json);
+        if (res.get("p_id_generate_response") == null){
+            throw new WxException(ResponseCodeConstant.SYS_EXCEPTION.getResponseCode(),res.getJSONObject("error_response").getString("error_msg"));
+        }
+        return response;
+    }
+
+    public WxResponse<PddGenUrlVo> generateUrl(PddGenerateUrlWxReq req) throws IOException {
+        String type = "pdd.ddk.goods.promotion.url.generate";
+        WxResponse<PddGenUrlVo> response = new WxResponse();
+        Map<String,Object> param = getPubParams(type);
+        param.put("goods_id_list",String.format("[%s]",req.getGoodsId()));
+        param.put("p_id",req.getPid());
+        if (req.getGenerateWeappWebview() != null){
+            param.put("generate_weapp_webview",req.getGenerateWeappWebview());
+        }
+        if (req.getGenerateShortUrl() != null){
+            param.put("generate_short_url",req.getGenerateShortUrl());
+        }
+        param.put("sign",getSign(param));
+        String json = httpAPIService.doPost(url,param);
+        log.info("京推推请求结果："+json);
+        JSONObject res = JSONObject.parseObject(json);
+        if (res.get("goods_promotion_url_generate_response") == null){
+            throw new WxException(ResponseCodeConstant.SYS_EXCEPTION.getResponseCode(),res.getJSONObject("error_response").getString("error_msg"));
+        }
+        JSONObject result = res.getJSONObject("goods_promotion_url_generate_response");
+        PddGenUrlVo urlVo = JacksonMapper.parseObjectWithUnderScores(JSONObject.toJSONString(result.getJSONArray("goods_promotion_url_list").getJSONObject(0)),new TypeReference<PddGenUrlVo>(){});
+        response.setResult(urlVo);
         return response;
     }
 
